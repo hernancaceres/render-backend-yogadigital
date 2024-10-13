@@ -1,11 +1,22 @@
-import { Router } from 'express';
-import { crearAlumno, obtenerAlumnos,obtenerAlumnoPorId,actualizarAlumno,eliminarAlumno } from '../controllers/alumno.controller.js';
+import express from 'express';
+import authMiddleware from '../middleware/authMiddleware.js';
+import {
+  registrarAlumno,
+  loginAlumno,
+  obtenerPerfil,
+  logoutAlumno,
+  obtenerAlumnos,
+  obtenerAlumnoPorId,
+  actualizarAlumno,
+  eliminarAlumno
 
-const router = Router();
+} from '../controllers/alumno.controller.js';
 
-router.get('/alumnos', (req, res) => { res.send("obteniendo usuarios") });
+const router = express.Router();
 
-router.post('/crear', crearAlumno);
+// Rutas públicas
+router.post('/registrar', registrarAlumno);
+router.post('/login', loginAlumno);
 
 // Ruta para obtener todos los alumnos
 router.get('/', obtenerAlumnos);
@@ -19,7 +30,37 @@ router.put('/:id', actualizarAlumno);
 // Ruta para eliminar un alumno por ID
 router.delete('/:id', eliminarAlumno);
 
-//router.get('/alumnos/:id/progreso', obtenerProgreso);
-// router.put('/alumnos/:id/progreso', actualizarProgreso);
+// Ruta protegida para obtener el perfil del alumno autenticado
+router.get('/perfil/:id', authMiddleware, obtenerPerfil);
+router.post('/logout', authMiddleware, logoutAlumno);
 
 export default router;
+
+
+
+
+// import { Router } from 'express';
+// import { crearAlumno, obtenerAlumnos,obtenerAlumnoPorId,actualizarAlumno,eliminarAlumno } from '../controllers/alumno.controller.js';
+
+// const router = Router();
+
+// router.get('/alumnos', (req, res) => { res.send("obteniendo usuarios") });
+
+// router.post('/crear', crearAlumno);
+
+// // Ruta para obtener todos los alumnos
+// router.get('/', obtenerAlumnos);
+
+// // Ruta para obtener un alumno por ID
+// router.get('/:id', obtenerAlumnoPorId);
+
+// // Ruta para actualizar un alumno por ID
+// router.put('/:id', actualizarAlumno);
+
+// // Ruta para eliminar un alumno por ID
+// router.delete('/:id', eliminarAlumno);
+
+// //router.get('/alumnos/:id/progreso', obtenerProgreso);
+// // router.put('/alumnos/:id/progreso', actualizarProgreso);
+
+// export default router;

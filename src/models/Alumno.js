@@ -16,6 +16,10 @@ const Alumno = sequelize.define('Alumno', {
     unique: true,
     allowNull: false,
   },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   progreso: {
     type: DataTypes.FLOAT, // porcentaje de progreso en las clases
     defaultValue: 0,

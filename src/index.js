@@ -1,11 +1,17 @@
 import express from 'express';
 import { PORT } from './config.js';
 import alumnoRoutes from  './routes/alumno.routes.js';
+import claseRoutes from './routes/claseRoutes.js';
+import posturaRoutes from './routes/posturaRoutes.js';
 import morgan from 'morgan';
 import sequelize from './database/database.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser'; // Importar cookie-parser
 
 const app = express();
+
+// Usar cookie-parser middleware
+app.use(cookieParser());
 
 // Middleware para habilitar CORS
 app.use(cors());
@@ -20,6 +26,8 @@ app.use(morgan("dev"))
 
 // Tus rutas
 app.use('/api/alumnos', alumnoRoutes);
+app.use('/api', claseRoutes);
+app.use('/api', posturaRoutes);
 
 app.listen(PORT, () => {
   console.log(`SERVER corriendo en: http://localhost:${PORT}`);
