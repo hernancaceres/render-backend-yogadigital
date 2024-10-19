@@ -1,4 +1,5 @@
 import express from 'express';
+import { validarRegistroAlumno, validarLoginAlumno } from '../middleware/alumno.validations.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import {
   registrarAlumno,
@@ -15,8 +16,8 @@ import {
 const router = express.Router();
 
 // Rutas públicas
-router.post('/registrar', registrarAlumno);
-router.post('/login', loginAlumno);
+router.post('/registrar', validarRegistroAlumno, registrarAlumno);
+router.post('/login', validarLoginAlumno, loginAlumno);
 
 // Ruta para obtener todos los alumnos
 router.get('/', obtenerAlumnos);

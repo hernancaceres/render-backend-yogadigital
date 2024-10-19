@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { validarPostura } from '../middleware/postura.validations.js';
 import {
   crearPostura,
   obtenerPosturas,
@@ -10,7 +11,7 @@ import {
 const router = Router();
 
 // Crear una nueva postura
-router.post('/posturas', crearPostura);
+router.post('/posturas',validarPostura, crearPostura);
 
 // Obtener todas las posturas
 router.get('/posturas', obtenerPosturas);

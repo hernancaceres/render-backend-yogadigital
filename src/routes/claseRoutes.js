@@ -1,4 +1,5 @@
 import express from 'express';
+import { validarClase } from '../middleware/clase.validations.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import {
   crearClase,
@@ -11,7 +12,7 @@ import {
 const router = express.Router();
 
 // Crear una nueva clase
-router.post('/clases', authMiddleware, crearClase);
+router.post('/clases', authMiddleware,validarClase, crearClase);
 
 // Obtener todas las clases
 router.get('/clases', obtenerClases);
