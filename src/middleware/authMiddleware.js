@@ -13,6 +13,7 @@ const authMiddleware = (req, res, next) => {
   }
 
   try {
+    // Verificar el token y decodificarlo
     const decoded = jwt.verify(token, JWT_SECRET);
     console.log('Token decodificado:', decoded); // Log del contenido del token
     req.alumnoId = decoded.id; // Extraer el ID del alumno del token

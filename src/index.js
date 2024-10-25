@@ -3,6 +3,7 @@ import { PORT } from './config.js';
 import alumnoRoutes from  './routes/alumno.routes.js';
 import claseRoutes from './routes/claseRoutes.js';
 import posturaRoutes from './routes/posturaRoutes.js';
+import cursoRoutes from './routes/cursoRoutes.js';
 import morgan from 'morgan';
 import sequelize from './database/database.js';
 import cors from 'cors';
@@ -28,6 +29,7 @@ app.use(morgan("dev"))
 app.use('/api/alumnos', alumnoRoutes);
 app.use('/api', claseRoutes);
 app.use('/api', posturaRoutes);
+app.use('/api', cursoRoutes);
 
 app.listen(PORT, () => {
   console.log(`SERVER corriendo en: http://localhost:${PORT}`);
