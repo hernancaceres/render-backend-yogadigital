@@ -1,6 +1,7 @@
 import express from 'express';
 import { validarClase } from '../middleware/clase.validations.js';
-import authMiddleware from '../middleware/authMiddleware.js';
+import { authMiddleware, adminOnly } from '../middleware/authMiddleware.js';
+
 import {
   crearClase,
   obtenerClases,

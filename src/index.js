@@ -1,6 +1,7 @@
 import express from 'express';
 import { PORT } from './config.js';
 import alumnoRoutes from  './routes/alumno.routes.js';
+import adminRoutes from  './routes/admin.routes.js';
 import claseRoutes from './routes/claseRoutes.js';
 import posturaRoutes from './routes/posturaRoutes.js';
 import cursoRoutes from './routes/cursoRoutes.js';
@@ -27,6 +28,7 @@ app.use(morgan("dev"))
 
 // Tus rutas
 app.use('/api/alumnos', alumnoRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api', claseRoutes);
 app.use('/api', posturaRoutes);
 app.use('/api', cursoRoutes);

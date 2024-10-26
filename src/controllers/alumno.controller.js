@@ -40,7 +40,7 @@ export const loginAlumno = async (req, res) => {
     }
 
     // Crear JWT token
-    const token = jwt.sign({ id: alumno.id, nombre: alumno.nombre }, JWT_SECRET, {
+    const token = jwt.sign({ id: alumno.id, nombre: alumno.nombre,isAdmin: alumno.isAdmin }, JWT_SECRET, {
       expiresIn: '1h' // El token expira en 1 hora
     });
 
@@ -53,6 +53,8 @@ export const loginAlumno = async (req, res) => {
     res.status(500).json({ error: 'Error al iniciar sesión', detalles: error.message });
   }
 };
+
+
 
 // // Iniciar sesión (Login)
 // export const loginAlumno = async (req, res) => {
@@ -71,21 +73,24 @@ export const loginAlumno = async (req, res) => {
 //     }
 
 //     // Crear JWT token
-//     const token = jwt.sign({ id: alumno.id, nombre: alumno.nombre  }, JWT_SECRET, {
+//     const token = jwt.sign({ id: alumno.id, nombre: alumno.nombre }, JWT_SECRET, {
 //       expiresIn: '1h' // El token expira en 1 hora
 //     });
 
-//     console.log('Token JWT generado:', token); // Log para verificar el token
+//     // Establecer el token como una cookie
+//     res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
 
-//     res.json({ token });
+//     res.json({ message: 'Inicio de sesión exitoso', alumno: { id: alumno.id, nombre: alumno.nombre } });
 //   } catch (error) {
-//     console.error('Error en el login:', error); // Log para ver detalles en consola
+//     console.error('Error en el login:', error);
 //     res.status(500).json({ error: 'Error al iniciar sesión', detalles: error.message });
 //   }
- 
 // };
 
+
 // Obtener perfil del alumno autenticado
+
+
 export const obtenerPerfil = async (req, res) => {
   try {
     console.log('ID de alumno recibido en el perfil:', req.alumnoId); // Log para ver si se pasa el ID correcto
@@ -100,10 +105,6 @@ export const obtenerPerfil = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener el perfil del alumno' });
   }
 };
-
-
-
-
 
 
 // Obtener todos los alumnos
@@ -188,106 +189,3 @@ export const logoutAlumno = (req, res) => {
   res.json({ message: 'Sesión cerrada correctamente' });
 };
 
-
-
-
-
-
-// import Alumno from '../models/Alumno.js';
-
-// // Crear un nuevo alumno
-// export const crearAlumno = async (req, res) => {
-//   const { nombre, email, password } = req.body;
-//   try {
-//     const nuevoAlumno = await Alumno.create({ nombre, email, password });
-//     res.json(nuevoAlumno);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Error al crear el alumno' });
-//   }
-// };
-
-// // Obtener todos los alumnos
-// export const obtenerAlumnos = async (req, res) => {
-//   try {
-//     const alumnos = await Alumno.findAll(); // Consulta todos los alumnos
-//     res.json(alumnos);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Error al obtener los alumnos' });
-//   }
-// };
-
-// // Obtener un alumno por ID
-// export const obtenerAlumnoPorId = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const alumno = await Alumno.findByPk(id); // Busca por Primary Key (ID)
-//     if (!alumno) {
-//       return res.status(404).json({ error: 'Alumno no encontrado' });
-//     }
-//     res.json(alumno);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Error al obtener el alumno' });
-//   }
-// };
-
-// // Actualizar un alumno por ID
-// export const actualizarAlumno = async (req, res) => {
-//   const { id } = req.params;
-//   const { nombre, email, password } = req.body;
-//   try {
-//     const alumno = await Alumno.findByPk(id);
-//     if (!alumno) {
-//       return res.status(404).json({ error: 'Alumno no encontrado' });
-//     }
-//     alumno.nombre = nombre;
-//     alumno.email = email;
-//     alumno.password = password;
-//     await alumno.save();
-//     res.json(alumno);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Error al actualizar el alumno' });
-//   }
-// };
-
-// // Eliminar un alumno por ID
-// export const eliminarAlumno = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const alumno = await Alumno.findByPk(id);
-//     if (!alumno) {
-//       return res.status(404).json({ error: 'Alumno no encontrado' });
-//     }
-//     await alumno.destroy();
-//     res.json({ message: 'Alumno eliminado correctamente' });
-//   } catch (error) {
-//     res.status(500).json({ error: 'Error al eliminar el alumno' });
-//   }
-// };
-
-// // // Obtener el progreso de un alumno
-// // export const obtenerProgreso = async (req, res) => {
-// //   const { id } = req.params;
-// //   try {
-// //     const alumno = await Alumno.findByPk(id);
-// //     if (!alumno) return res.status(404).json({ error: 'Alumno no encontrado' });
-// //     res.json(alumno.progreso);
-// //   } catch (error) {
-// //     res.status(500).json({ error: 'Error al obtener el progreso del alumno' });
-// //   }
-// // };
-
-// // // Actualizar el progreso del alumno
-// // export const actualizarProgreso = async (req, res) => {
-// //   const { id } = req.params;
-// //   const { progreso } = req.body;
-// //   try {
-// //     const alumno = await Alumno.findByPk(id);
-// //     if (!alumno) return res.status(404).json({ error: 'Alumno no encontrado' });
-
-// //     alumno.progreso = progreso;
-// //     await alumno.save();
-// //     res.json(alumno);
-// //   } catch (error) {
-// //     res.status(500).json({ error: 'Error al actualizar el progreso' });
-// //   }
-// // };

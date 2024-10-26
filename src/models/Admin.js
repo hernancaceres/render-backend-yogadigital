@@ -1,7 +1,8 @@
+// models/Admin.js
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/database.js';
 
-const Alumno = sequelize.define('Alumno', {
+const Admin = sequelize.define('Admin', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -20,14 +21,6 @@ const Alumno = sequelize.define('Alumno', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  progreso: {
-    type: DataTypes.FLOAT, // porcentaje de progreso en las clases
-    defaultValue: 0,
-  },
-  isAdmin: { // Nuevo campo para distinguir administradores
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
 });
 
-export default Alumno;
+export default Admin;

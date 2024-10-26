@@ -1,6 +1,6 @@
 import express from 'express';
 import { validarRegistroAlumno, validarLoginAlumno } from '../middleware/alumno.validations.js';
-import authMiddleware from '../middleware/authMiddleware.js';
+import { authMiddleware, adminOnly } from '../middleware/authMiddleware.js';
 import {
   registrarAlumno,
   loginAlumno,
@@ -10,7 +10,6 @@ import {
   obtenerAlumnoPorId,
   actualizarAlumno,
   eliminarAlumno
-
 } from '../controllers/alumno.controller.js';
 
 const router = express.Router();
@@ -19,17 +18,11 @@ const router = express.Router();
 router.post('/registrar', validarRegistroAlumno, registrarAlumno);
 router.post('/login', validarLoginAlumno, loginAlumno);
 
-// Ruta para obtener todos los alumnos
-router.get('/', obtenerAlumnos);
-
-// Ruta para obtener un alumno por ID
-router.get('/:id', obtenerAlumnoPorId);
-
-// Ruta para actualizar un alumno por ID
-router.put('/:id', actualizarAlumno);
-
-// Ruta para eliminar un alumno por ID
-router.delete('/:id', eliminarAlumno);
+// Rutas protegidas solo para administradores
+router.get('/', authMiddleware, adminOnly, obtenerAlumnos); // Obtener todos los alumnos solo si eres admin
+router.get('/:id', authMiddleware, adminOnly, obtenerAlumnoPorId); // Obtener un alumno por ID solo si eres admin
+router.put('/:id', authMiddleware, adminOnly, actualizarAlumno); // Actualizar un alumno solo si eres admin
+router.delete('/:id', authMiddleware, adminOnly, eliminarAlumno); // Eliminar un alumno solo si eres admin
 
 // Ruta protegida para obtener el perfil del alumno autenticado
 router.get('/perfil/:id', authMiddleware, obtenerPerfil);
@@ -38,22 +31,33 @@ router.post('/logout', authMiddleware, logoutAlumno);
 export default router;
 
 
+// import express from 'express';
+// import { validarRegistroAlumno, validarLoginAlumno } from '../middleware/alumno.validations.js';
+// import authMiddleware  from '../middleware/authMiddleware.js';
+// import adminOnly  from '../middleware/authMiddleware.js';
+// import {
+//   registrarAlumno,
+//   loginAlumno,
+//   obtenerPerfil,
+//   logoutAlumno,
+//   obtenerAlumnos,
+//   obtenerAlumnoPorId,
+//   actualizarAlumno,
+//   eliminarAlumno
 
+// } from '../controllers/alumno.controller.js';
 
-// import { Router } from 'express';
-// import { crearAlumno, obtenerAlumnos,obtenerAlumnoPorId,actualizarAlumno,eliminarAlumno } from '../controllers/alumno.controller.js';
+// const router = express.Router();
 
-// const router = Router();
-
-// router.get('/alumnos', (req, res) => { res.send("obteniendo usuarios") });
-
-// router.post('/crear', crearAlumno);
+// // Rutas públicas
+// router.post('/registrar', validarRegistroAlumno, registrarAlumno);
+// router.post('/login', validarLoginAlumno, loginAlumno);
 
 // // Ruta para obtener todos los alumnos
-// router.get('/', obtenerAlumnos);
+// router.get('/',authMiddleware, adminOnly, obtenerAlumnos);
 
 // // Ruta para obtener un alumno por ID
-// router.get('/:id', obtenerAlumnoPorId);
+// router.get('/:id', adminOnly, obtenerAlumnoPorId);
 
 // // Ruta para actualizar un alumno por ID
 // router.put('/:id', actualizarAlumno);
@@ -61,7 +65,8 @@ export default router;
 // // Ruta para eliminar un alumno por ID
 // router.delete('/:id', eliminarAlumno);
 
-// //router.get('/alumnos/:id/progreso', obtenerProgreso);
-// // router.put('/alumnos/:id/progreso', actualizarProgreso);
+// // Ruta protegida para obtener el perfil del alumno autenticado
+// router.get('/perfil/:id', authMiddleware, obtenerPerfil);
+// router.post('/logout', authMiddleware, logoutAlumno);
 
 // export default router;
