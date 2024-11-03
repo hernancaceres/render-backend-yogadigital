@@ -47,45 +47,16 @@ export const loginAlumno = async (req, res) => {
     // Establecer el token como una cookie
     res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
 
-    res.json({ message: 'Inicio de sesión exitoso', alumno: { id: alumno.id, nombre: alumno.nombre } });
+    res.json({
+       message: 'Inicio de sesión exitoso', 
+       alumno: { id: alumno.id, nombre: alumno.nombre },
+       token: token, 
+       });
   } catch (error) {
     console.error('Error en el login:', error);
     res.status(500).json({ error: 'Error al iniciar sesión', detalles: error.message });
   }
 };
-
-
-
-// // Iniciar sesión (Login)
-// export const loginAlumno = async (req, res) => {
-//   const { email, password } = req.body;
-//   try {
-//     const alumno = await Alumno.findOne({ where: { email } });
-
-//     if (!alumno) {
-//       return res.status(404).json({ error: 'Email o contraseña incorrectos' });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, alumno.password);
-
-//     if (!isMatch) {
-//       return res.status(400).json({ error: 'Email o contraseña incorrectos' });
-//     }
-
-//     // Crear JWT token
-//     const token = jwt.sign({ id: alumno.id, nombre: alumno.nombre }, JWT_SECRET, {
-//       expiresIn: '1h' // El token expira en 1 hora
-//     });
-
-//     // Establecer el token como una cookie
-//     res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
-
-//     res.json({ message: 'Inicio de sesión exitoso', alumno: { id: alumno.id, nombre: alumno.nombre } });
-//   } catch (error) {
-//     console.error('Error en el login:', error);
-//     res.status(500).json({ error: 'Error al iniciar sesión', detalles: error.message });
-//   }
-// };
 
 
 // Obtener perfil del alumno autenticado

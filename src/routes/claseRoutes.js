@@ -12,8 +12,11 @@ import {
 
 const router = express.Router();
 
-// Crear una nueva clase
-router.post('/clases', authMiddleware,validarClase, crearClase);
+// Ruta para crear una clase independiente
+router.post('/clases', authMiddleware, validarClase, crearClase);
+
+// Ruta para crear una clase dentro de un curso específico
+router.post('/cursos/:cursoId/clases', authMiddleware, validarClase, crearClase);
 
 // Obtener todas las clases
 router.get('/clases', obtenerClases);

@@ -23,7 +23,7 @@ export const registrarAdmin = async (req, res) => {
     }
 };
 
-// Iniciar sesión (Login)
+// Iniciar sesión (Login Admin)
 export const loginAdmin = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -42,10 +42,14 @@ export const loginAdmin = async (req, res) => {
         const token = jwt.sign({ id: admin.id, nombre: admin.nombre, role: 'admin' }, JWT_SECRET, {
             expiresIn: '1h',
         });
-        
+
         // Set cookie with token
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
-        res.json({ message: 'Inicio de sesión exitoso', admin: { id: admin.id, nombre: admin.nombre } });
+        res.json({
+            message: 'Inicio de sesión exitoso',
+            admin: { id: admin.id, nombre: admin.nombre },
+            token: token, 
+        });
     } catch (error) {
         res.status(500).json({ error: 'Error al iniciar sesión' });
     }

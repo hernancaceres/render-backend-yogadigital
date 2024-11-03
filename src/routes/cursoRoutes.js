@@ -19,10 +19,10 @@ const router = express.Router();
 router.post('/cursos', authMiddleware, validarCurso, crearCurso);
 
 // Obtener todos los cursos
-router.get('/cursos', authMiddleware, obtenerCursos);
+router.get('/cursos', authMiddleware, adminOnly,  obtenerCursos);
 
 // Obtener un curso por ID
-router.get('/cursos/:id', authMiddleware, obtenerCursoPorId);
+router.get('/cursos/:id', authMiddleware, adminOnly, obtenerCursoPorId);
 
 // Actualizar un curso por ID
 router.put('/cursos/:id', authMiddleware, validarCurso, actualizarCurso);
@@ -36,8 +36,11 @@ router.post('/cursos/:cursoId/alumnos', authMiddleware, asignarAlumnoACurso);
 // Actualizar el progreso de un alumno en un curso
 router.put('/cursos/:cursoId/alumnos/:alumnoId/progreso', authMiddleware, actualizarProgresoCurso);
 
-// Obtener cursos por alumnoId
+
+// Ruta para obtener los cursos asignados a un alumno
 router.get('/alumnos/:alumnoId/cursos', authMiddleware, obtenerCursosPorAlumnoId);
+
+
 
 
 export default router;
