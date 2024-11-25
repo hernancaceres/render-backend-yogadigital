@@ -1,15 +1,52 @@
+import Clase from '../models/Clase.js';
 import Postura from '../models/Postura.js';
 
 // Crear una nueva postura
 export const crearPostura = async (req, res) => {
-  const { nombre, descripcion, duracion, claseId } = req.body;
+  const { nombre, descripcion, duracion, instrucciones } = req.body;
+  const { claseId } = req.params; // ID de la clase, si está disponible en la ruta
+
   try {
-    const nuevaPostura = await Postura.create({ nombre, descripcion, duracion, claseId });
-    res.json(nuevaPostura);
+    console.log('Datos recibidos para crear postura:', { nombre, descripcion, duracion, instrucciones, claseId });
+
+    // Verificar si la postura debe asociarse con una clase específica
+    if (claseId) {
+      // Validar que la clase exista
+      const clase = await Clase.findByPk(claseId);
+      if (!clase) {
+        return res.status(404).json({ error: 'Clase no encontrada' });
+      }
+
+      // Crear la postura y asociarla a la clase
+      const nuevaPostura = await Postura.create({ nombre, descripcion, duracion, instrucciones, claseId: clase.id });
+
+      console.log('Postura creada y asociada a la clase:', nuevaPostura);
+      return res.status(201).json({
+        message: 'Postura creada y asociada a la clase exitosamente',
+        postura: nuevaPostura,
+      });
+    } else {
+      // Crear una postura sin clase específica
+      const nuevaPostura = await Postura.create({ nombre, descripcion, duracion, instrucciones });
+      console.log('Postura creada exitosamente sin clase:', nuevaPostura);
+      return res.status(201).json(nuevaPostura);
+    }
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear la postura' });
+    console.error('Error al crear la postura:', error);
+    res.status(500).json({ error: 'Error al crear la postura', detalles: error.message });
   }
 };
+
+// // Crear una nueva postura
+// export const crearPostura = async (req, res) => {
+//   const { nombre, descripcion, duracion, claseId } = req.body;
+//   try {
+//     const nuevaPostura = await Postura.create({ nombre, descripcion, duracion, claseId });
+//     res.json(nuevaPostura);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Error al crear la postura' });
+//   }
+// };
 
 // Obtener todas las posturas
 export const obtenerPosturas = async (req, res) => {
@@ -46,6 +83,7 @@ export const actualizarPostura = async (req, res) => {
     }
     postura.nombre = nombre;
     postura.descripcion = descripcion;
+    postura.instrucciones = instrucciones;
     postura.duracion = duracion;
     await postura.save();
     res.json(postura);

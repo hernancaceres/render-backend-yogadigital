@@ -1,22 +1,6 @@
 import Curso from '../models/Curso.js';
 import Clase from '../models/Clase.js';
-
-// // Crear una nueva clase
-// export const crearClase = async (req, res) => {
-//     const { titulo, descripcion, duracion } = req.body;
-//     try {
-//       console.log('Datos recibidos para crear clase:', { titulo, descripcion, duracion });
-      
-//       const nuevaClase = await Clase.create({ titulo, descripcion, duracion });
-      
-//       console.log('Clase creada exitosamente:', nuevaClase);
-//       res.json(nuevaClase);
-//     } catch (error) {
-//       console.error('Error al crear la clase:', error); // Log del error
-//       res.status(500).json({ error: 'Error al crear la clase', detalles: error.message });
-//     }
-//   };
-
+import Postura from '../models/Postura.js';
 
 // Crear una nueva clase
 
@@ -55,29 +39,65 @@ export const crearClase = async (req, res) => {
   }
 };
 
-// Obtener todas las clases
+// Obtener todas las clases con las posturas asociadas
 export const obtenerClases = async (req, res) => {
   try {
-    const clases = await Clase.findAll();
+    const clases = await Clase.findAll({
+      include: [
+        {
+          model: Postura,
+          as: 'posturas', // Asegúrate de que el alias coincida con el que usaste en el modelo
+        },
+      ],
+    });
     res.json(clases);
   } catch (error) {
+    console.error('Error al obtener las clases:', error);
     res.status(500).json({ error: 'Error al obtener las clases' });
   }
 };
+
+
+
+
+// // Obtener una clase por ID
+// export const obtenerClasePorId = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const clase = await Clase.findByPk(id);
+//     if (!clase) {
+//       return res.status(404).json({ error: 'Clase no encontrada' });
+//     }
+//     res.json(clase);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Error al obtener la clase' });
+//   }
+// };
 
 // Obtener una clase por ID
 export const obtenerClasePorId = async (req, res) => {
   const { id } = req.params;
   try {
-    const clase = await Clase.findByPk(id);
+    const clase = await Clase.findByPk(id, {
+      include: [{
+        model: Postura, // Modelo de posturas relacionadas
+        as: 'posturas'  // Asegúrate de que coincide con el alias usado en las asociaciones
+      }]
+    });
+
     if (!clase) {
       return res.status(404).json({ error: 'Clase no encontrada' });
     }
+
     res.json(clase);
   } catch (error) {
+    console.error('Error al obtener los detalles de la clase:', error);
     res.status(500).json({ error: 'Error al obtener la clase' });
   }
 };
+
+
+
 
 // Actualizar una clase
 export const actualizarClase = async (req, res) => {

@@ -11,6 +11,11 @@ AlumnoCursos.init({
   progreso: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
+    validate: {
+      isInt: true,
+      min: 0,
+      max: 100,
+    },
   },
   alumnoId: {
     type: DataTypes.INTEGER,

@@ -2,6 +2,7 @@ import Curso from '../models/Curso.js';
 import Alumno from '../models/Alumno.js';
 import Clase from '../models/Clase.js';
 import AlumnoCursos from '../models/AlumnoCursos.js';
+import Postura from '../models/Postura.js';
 
 // Crear un nuevo curso
 export const crearCurso = async (req, res) => {
@@ -142,7 +143,7 @@ export const actualizarProgresoCurso = async (req, res) => {
     }
 };
 
-
+// Obtener los cursos asignados a un alumno (con el progreso, las clases y las posturas de cada clase)
 export const obtenerCursosPorAlumnoId = async (req, res) => {
     const alumnoIdSolicitado = parseInt(req.params.alumnoId, 10);
 
@@ -155,7 +156,7 @@ export const obtenerCursosPorAlumnoId = async (req, res) => {
     console.log('ID del alumno autenticado:', req.alumnoId);
 
     try {
-        const cursosConProgreso = await Alumno.findAll({
+        const cursosConProgreso = await Alumno.findOne({
             where: { id: req.alumnoId },
             include: [
                 {
@@ -166,26 +167,48 @@ export const obtenerCursosPorAlumnoId = async (req, res) => {
                         model: AlumnoCursos,
                         attributes: ['progreso'],
                     },
+                    include: [
+                        {
+                            model: Clase,
+                            as: 'clases',
+                            attributes: ['id', 'titulo', 'descripcion'],
+                            include: [
+                                {
+                                    model: Postura,
+                                    as: 'posturas', // Asegúrate de que el alias coincida con el que usaste en el modelo
+                                    attributes: ['id', 'nombre', 'descripcion', 'duracion'],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         });
 
-        console.log('Cursos obtenidos:', cursosConProgreso);
-
-        if (!cursosConProgreso || cursosConProgreso.length === 0) {
+        if (!cursosConProgreso || !cursosConProgreso.cursos || cursosConProgreso.cursos.length === 0) {
             console.log('Error: No se encontraron cursos para este alumno');
             return res.status(404).json({ error: 'No se encontraron cursos para este alumno' });
         }
 
-        const resultado = cursosConProgreso[0].cursos.map((curso) => ({
+        const resultado = cursosConProgreso.cursos.map((curso) => ({
             cursoId: curso.id,
             titulo: curso.titulo,
             descripcion: curso.descripcion,
             duracionTotal: curso.duracionTotal,
             progreso: curso.AlumnoCursos.progreso,
+            clases: curso.clases.map((clase) => ({
+                claseId: clase.id,
+                titulo: clase.titulo,
+                descripcion: clase.descripcion,
+                posturas: clase.posturas.map((postura) => ({
+                    posturaId: postura.id,
+                    nombre: postura.nombre,
+                    descripcion: postura.descripcion,
+                    duracion: postura.duracion,
+                })),
+            })),
         }));
 
-        console.log('Cursos formateados para la respuesta:', resultado);
         res.json(resultado);
     } catch (error) {
         console.error('Error al obtener los cursos del alumno:', error);
@@ -195,43 +218,65 @@ export const obtenerCursosPorAlumnoId = async (req, res) => {
 
 
 
-// // Obtener los cursos asignados a un alumno (con el progreso)
+// // Obtener los cursos asignados a un alumno (con el progreso y las clases)
+
 // export const obtenerCursosPorAlumnoId = async (req, res) => {
-//     const { alumnoId } = req.params; // Obtener el ID del alumno desde los parámetros de la URL
+//     const alumnoIdSolicitado = parseInt(req.params.alumnoId, 10);
+
+//     // Asegurarse de que el alumno acceda solo a sus cursos
+//     if (alumnoIdSolicitado !== req.alumnoId) {
+//         console.log('Error: Acceso denegado, alumno no autorizado');
+//         return res.status(403).json({ error: 'Acceso denegado, alumno no autorizado' });
+//     }
+
+//     console.log('ID del alumno autenticado:', req.alumnoId);
 
 //     try {
-//         // Consultar los cursos de un alumno y su progreso
-//         const cursosConProgreso = await Alumno.findAll({
-//             where: { id: alumnoId }, // Filtrar por el alumnoId
+//         const cursosConProgreso = await Alumno.findOne({
+//             where: { id: req.alumnoId },
 //             include: [
 //                 {
-//                     model: Curso, // Incluir el modelo Curso a través de la tabla intermedia AlumnoCursos
-//                     as: 'cursos',  // Alias usado en la relación belongsToMany
-//                     attributes: ['id', 'titulo', 'descripcion', 'duracionTotal'], // Selecciona los campos que desees del curso
+//                     model: Curso,
+//                     as: 'cursos',
+//                     attributes: ['id', 'titulo', 'descripcion', 'duracionTotal'],
 //                     through: {
 //                         model: AlumnoCursos,
-//                         attributes: ['progreso'], // Incluir el progreso del alumno en este curso desde la tabla intermedia
+//                         attributes: ['progreso'],
 //                     },
+//                     include: [
+//                         {
+//                             model: Clase,
+//                             as: 'clases',
+//                             attributes: ['id', 'titulo', 'descripcion'],
+//                         },
+//                     ],
 //                 },
 //             ],
 //         });
 
-//         if (!cursosConProgreso || cursosConProgreso.length === 0) {
+//         if (!cursosConProgreso || !cursosConProgreso.cursos || cursosConProgreso.cursos.length === 0) {
+//             console.log('Error: No se encontraron cursos para este alumno');
 //             return res.status(404).json({ error: 'No se encontraron cursos para este alumno' });
 //         }
 
-//         // Formatear la respuesta
-//         const resultado = cursosConProgreso[0].cursos.map((curso) => ({
+//         const resultado = cursosConProgreso.cursos.map((curso) => ({
 //             cursoId: curso.id,
 //             titulo: curso.titulo,
 //             descripcion: curso.descripcion,
 //             duracionTotal: curso.duracionTotal,
-//             progreso: curso.AlumnoCursos.progreso, // Obtener el progreso desde la tabla intermedia AlumnoCursos
+//             progreso: curso.AlumnoCursos.progreso,
+//             clases: curso.clases.map((clase) => ({
+//                 claseId: clase.id,
+//                 titulo: clase.titulo,
+//                 descripcion: clase.descripcion,
+                
+//             })),
 //         }));
 
-//         res.json(resultado); // Retorna los cursos con su progreso
+//         res.json(resultado);
 //     } catch (error) {
-//         console.error(error);
+//         console.error('Error al obtener los cursos del alumno:', error);
 //         res.status(500).json({ error: 'Error al obtener los cursos del alumno' });
 //     }
 // };
+

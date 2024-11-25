@@ -45,9 +45,10 @@ export const loginAdmin = async (req, res) => {
 
         // Set cookie with token
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
+
         res.json({
             message: 'Inicio de sesión exitoso',
-            admin: { id: admin.id, nombre: admin.nombre },
+            admin: { id: admin.id, nombre: admin.nombre, role:admin.isAdmin },
             token: token, 
         });
     } catch (error) {
@@ -58,7 +59,7 @@ export const loginAdmin = async (req, res) => {
 // Obtener perfil del administrador autenticado
 export const obtenerPerfilAdmin = async (req, res) => {
     try {
-        const admin = await Admin.findByPk(req.adminId);
+        const admin = await Admin.findByPk(req.alumnoId);
         if (!admin) {
             return res.status(404).json({ error: 'Administrador no encontrado' });
         }

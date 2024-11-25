@@ -1,8 +1,8 @@
 // routes/admin.routes.js
 import express from 'express';
-import { registrarAdmin, loginAdmin, obtenerPerfilAdmin, logoutAdmin } from '../controllers/admin.controller.js';
+import { registrarAdmin, loginAdmin, obtenerPerfilAdmin,  logoutAdmin } from '../controllers/admin.controller.js';
 import { authMiddleware, adminOnly } from '../middleware/authMiddleware.js';
-import { validarRegistroAdmin,validarLoginAdmin } from '../middleware/admin.validations.js';
+import { validarRegistroAdmin, validarLoginAdmin } from '../middleware/admin.validations.js';
 
 
 
@@ -13,7 +13,7 @@ router.post('/registrar',validarRegistroAdmin, registrarAdmin);
 router.post('/login',validarLoginAdmin, loginAdmin);
 
 // Ruta protegida para obtener el perfil del administrador autenticado
-router.get('/perfil', authMiddleware, obtenerPerfilAdmin);
-router.post('/logout', authMiddleware, logoutAdmin);
+router.get('/perfil', authMiddleware, adminOnly, obtenerPerfilAdmin);
+router.post('/logout', authMiddleware, adminOnly, logoutAdmin);
 
 export default router;

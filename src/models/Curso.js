@@ -7,14 +7,24 @@ const Curso = sequelize.define('Curso', {
   titulo: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
   descripcion: {
     type: DataTypes.TEXT,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
   duracionTotal: {
     type: DataTypes.INTEGER, // Duración total del curso en minutos
     allowNull: false,
+    validate: {
+      isInt: true,
+      min: 1,
+    },
   },
 }, {
   timestamps: true,

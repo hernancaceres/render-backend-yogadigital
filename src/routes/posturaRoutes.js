@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { validarPostura } from '../middleware/postura.validations.js';
+import { authMiddleware, adminOnly } from '../middleware/authMiddleware.js';
 import {
   crearPostura,
   obtenerPosturas,
@@ -10,8 +11,11 @@ import {
 
 const router = Router();
 
-// Crear una nueva postura
-router.post('/posturas',validarPostura, crearPostura);
+// Ruta para crear una postura independiente
+router.post('/posturas',authMiddleware, adminOnly, validarPostura, crearPostura);
+
+// Ruta para crear una postura dentro de una clase específica
+router.post('/clases/:claseId/posturas', authMiddleware, adminOnly, validarPostura, crearPostura);
 
 // Obtener todas las posturas
 router.get('/posturas', obtenerPosturas);

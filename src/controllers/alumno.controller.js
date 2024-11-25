@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config.js';
 
+
+
 // Registrar un nuevo alumno con contraseña encriptada
 export const registrarAlumno = async (req, res) => {
   const { nombre, email, password } = req.body;
@@ -40,7 +42,7 @@ export const loginAlumno = async (req, res) => {
     }
 
     // Crear JWT token
-    const token = jwt.sign({ id: alumno.id, nombre: alumno.nombre,isAdmin: alumno.isAdmin }, JWT_SECRET, {
+    const token = jwt.sign({ id: alumno.id, nombre: alumno.nombre, isAdmin: alumno.isAdmin }, JWT_SECRET, {
       expiresIn: '1h' // El token expira en 1 hora
     });
 
@@ -49,7 +51,7 @@ export const loginAlumno = async (req, res) => {
 
     res.json({
        message: 'Inicio de sesión exitoso', 
-       alumno: { id: alumno.id, nombre: alumno.nombre },
+       alumno: { id: alumno.id, nombre: alumno.nombre, role:alumno.isAdmin },
        token: token, 
        });
   } catch (error) {
@@ -60,7 +62,6 @@ export const loginAlumno = async (req, res) => {
 
 
 // Obtener perfil del alumno autenticado
-
 
 export const obtenerPerfil = async (req, res) => {
   try {
@@ -136,21 +137,21 @@ export const eliminarAlumno = async (req, res) => {
   }
 };
 
-// Middleware para verificar el token JWT
-export const verificarToken = (req, res, next) => {
-  const token = req.header('x-auth-token');
-  if (!token) {
-    return res.status(401).json({ error: 'No hay token, permiso denegado' });
-  }
+// // Middleware para verificar el token JWT
+// export const verificarToken = (req, res, next) => {
+//   const token = req.header('x-auth-token');
+//   if (!token) {
+//     return res.status(401).json({ error: 'No hay token, permiso denegado' });
+//   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.alumnoId = decoded.id;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: 'Token no válido' });
-  }
-};
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     req.alumnoId = decoded.id;
+//     next();
+//   } catch (error) {
+//     res.status(401).json({ error: 'Token no válido' });
+//   }
+// };
 
 // Cerrar sesión (Logout)
 export const logoutAlumno = (req, res) => {
@@ -159,4 +160,20 @@ export const logoutAlumno = (req, res) => {
 
   res.json({ message: 'Sesión cerrada correctamente' });
 };
+
+// // Controlador para obtener el perfil del alumno autenticado
+// export const obtenerPerfilAlumno = async (req, res) => {
+//   try {
+//     const alumno = await Alumno.findByPk(req.alumnoId); // Usa req.alumnoId en lugar de req.params.id
+
+//     if (!alumno) {
+//       return res.status(404).json({ error: 'Alumno no encontrado' });
+//     }
+
+//     res.json(alumno);
+//   } catch (error) {
+//     console.error('Error al obtener el perfil del alumno:', error);
+//     res.status(500).json({ error: 'Error al obtener el perfil del alumno' });
+//   }
+// };
 
