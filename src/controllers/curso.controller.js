@@ -28,14 +28,59 @@ export const obtenerCursos = async (req, res) => {
                 {
                     model: Clase,
                     as: 'clases',
+                    include: [
+                        {
+                            model: Postura,
+                            as: 'posturas',
+                            attributes: ['id', 'nombre', 'descripcion', 'duracion'],
+                        },
+                    ],
                 },
             ],
         });
-        res.json(cursos);
+
+        const resultado = cursos.map((curso) => ({
+            cursoId: curso.id,
+            titulo: curso.titulo,
+            descripcion: curso.descripcion,
+            duracionTotal: curso.duracionTotal || 0, // Agregar si aplica
+            clases: curso.clases.map((clase) => ({
+                claseId: clase.id,
+                titulo: clase.titulo,
+                descripcion: clase.descripcion,
+                posturas: clase.posturas.map((postura) => ({
+                    posturaId: postura.id,
+                    nombre: postura.nombre,
+                    descripcion: postura.descripcion,
+                    duracion: postura.duracion,
+                })),
+            })),
+        }));
+
+        res.json(resultado);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener los cursos' });
     }
 };
+
+
+
+// // Obtener todos los cursos
+// export const obtenerCursos = async (req, res) => {
+//     try {
+//         const cursos = await Curso.findAll({
+//             include: [
+//                 {
+//                     model: Clase,
+//                     as: 'clases',
+//                 },
+//             ],
+//         });
+//         res.json(cursos);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Error al obtener los cursos' });
+//     }
+// };
 
 // Obtener un curso por ID
 export const obtenerCursoPorId = async (req, res) => {
@@ -215,68 +260,3 @@ export const obtenerCursosPorAlumnoId = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los cursos del alumno' });
     }
 };
-
-
-
-// // Obtener los cursos asignados a un alumno (con el progreso y las clases)
-
-// export const obtenerCursosPorAlumnoId = async (req, res) => {
-//     const alumnoIdSolicitado = parseInt(req.params.alumnoId, 10);
-
-//     // Asegurarse de que el alumno acceda solo a sus cursos
-//     if (alumnoIdSolicitado !== req.alumnoId) {
-//         console.log('Error: Acceso denegado, alumno no autorizado');
-//         return res.status(403).json({ error: 'Acceso denegado, alumno no autorizado' });
-//     }
-
-//     console.log('ID del alumno autenticado:', req.alumnoId);
-
-//     try {
-//         const cursosConProgreso = await Alumno.findOne({
-//             where: { id: req.alumnoId },
-//             include: [
-//                 {
-//                     model: Curso,
-//                     as: 'cursos',
-//                     attributes: ['id', 'titulo', 'descripcion', 'duracionTotal'],
-//                     through: {
-//                         model: AlumnoCursos,
-//                         attributes: ['progreso'],
-//                     },
-//                     include: [
-//                         {
-//                             model: Clase,
-//                             as: 'clases',
-//                             attributes: ['id', 'titulo', 'descripcion'],
-//                         },
-//                     ],
-//                 },
-//             ],
-//         });
-
-//         if (!cursosConProgreso || !cursosConProgreso.cursos || cursosConProgreso.cursos.length === 0) {
-//             console.log('Error: No se encontraron cursos para este alumno');
-//             return res.status(404).json({ error: 'No se encontraron cursos para este alumno' });
-//         }
-
-//         const resultado = cursosConProgreso.cursos.map((curso) => ({
-//             cursoId: curso.id,
-//             titulo: curso.titulo,
-//             descripcion: curso.descripcion,
-//             duracionTotal: curso.duracionTotal,
-//             progreso: curso.AlumnoCursos.progreso,
-//             clases: curso.clases.map((clase) => ({
-//                 claseId: clase.id,
-//                 titulo: clase.titulo,
-//                 descripcion: clase.descripcion,
-                
-//             })),
-//         }));
-
-//         res.json(resultado);
-//     } catch (error) {
-//         console.error('Error al obtener los cursos del alumno:', error);
-//         res.status(500).json({ error: 'Error al obtener los cursos del alumno' });
-//     }
-// };
-
