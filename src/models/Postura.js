@@ -1,26 +1,68 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/database.js';
 
-const Postura = sequelize.define('Postura', {
-  nombre: {
-    type: DataTypes.STRING,
-    allowNull: false,
+const Postura = sequelize.define(
+  'Postura',
+  {
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    descripcion: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    duracion: {
+      type: DataTypes.INTEGER, // tiempo recomendado para sostener la postura
+      allowNull: false,
+    },
+    instrucciones: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    imagenUrl: {
+      type: DataTypes.STRING, // URL para la imagen de la postura
+      allowNull: true,
+    },
+    tiempoPracticado: {
+      type: DataTypes.INTEGER, // tiempo total en segundos practicado por el usuario
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
-  descripcion: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  duracion: {
-    type: DataTypes.INTEGER, // tiempo que se debe sostener la postura
-    allowNull: false,
-  },
-  instrucciones: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-}, {
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  }
+);
 
 export default Postura;
+
+
+
+
+// import { DataTypes } from 'sequelize';
+// import sequelize from '../database/database.js';
+
+// const Postura = sequelize.define('Postura', {
+//   nombre: {
+//     type: DataTypes.STRING,
+//     allowNull: false,
+//   },
+//   descripcion: {
+//     type: DataTypes.TEXT,
+//     allowNull: false,
+//   },
+//   duracion: {
+//     type: DataTypes.INTEGER, // tiempo que se debe sostener la postura
+//     allowNull: false,
+//   },
+//   instrucciones: {
+//     type: DataTypes.TEXT,
+//     allowNull: false,
+//   },
+// }, {
+//   timestamps: true,
+// });
+
+// export default Postura;
 
