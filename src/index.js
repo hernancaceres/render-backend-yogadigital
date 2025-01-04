@@ -5,6 +5,7 @@ import adminRoutes from  './routes/admin.routes.js';
 import claseRoutes from './routes/claseRoutes.js';
 import posturaRoutes from './routes/posturaRoutes.js';
 import cursoRoutes from './routes/cursoRoutes.js';
+import blogRoutes from './routes/blog.routes.js';
 import morgan from 'morgan';
 import sequelize from './database/database.js';
 import cors from 'cors';
@@ -32,6 +33,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api', claseRoutes);
 app.use('/api', posturaRoutes);
 app.use('/api', cursoRoutes);
+app.use('/api/blogs', blogRoutes);
 
 app.listen(PORT, () => {
   console.log(`SERVER corriendo en: http://localhost:${PORT}`);
