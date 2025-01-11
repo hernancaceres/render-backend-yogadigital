@@ -26,12 +26,16 @@ const Curso = sequelize.define('Curso', {
       min: 1,
     },
   },
+  imagenUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   timestamps: true,
 });
 
 // Relación de Curso a Clase (un curso tiene muchas clases)
-Curso.hasMany(Clase, { foreignKey: 'cursoId' , as: 'clases'});
+Curso.hasMany(Clase, { foreignKey: 'cursoId', as: 'clases' });
 Clase.belongsTo(Curso, { foreignKey: 'cursoId' });
 
 // Relación de Curso a Alumno (un alumno puede estar en muchos cursos y viceversa)

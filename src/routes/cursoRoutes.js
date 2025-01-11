@@ -19,7 +19,7 @@ const router = express.Router();
 router.post('/cursos', authMiddleware, validarCurso, crearCurso);
 
 // Obtener todos los cursos
-router.get('/cursos', authMiddleware, adminOnly,  obtenerCursos);
+router.get('/cursos', obtenerCursos);
 
 // Obtener un curso por ID
 router.get('/cursos/:id', authMiddleware, adminOnly, obtenerCursoPorId);

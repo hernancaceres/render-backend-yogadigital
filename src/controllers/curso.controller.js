@@ -6,11 +6,11 @@ import Postura from '../models/Postura.js';
 
 // Crear un nuevo curso
 export const crearCurso = async (req, res) => {
-    const { titulo, descripcion, duracionTotal } = req.body;
+    const { titulo, descripcion, duracionTotal, imagenUrl } = req.body;
     try {
-        console.log('Datos recibidos para crear curso:', { titulo, descripcion, duracionTotal });
+        console.log('Datos recibidos para crear curso:', { titulo, descripcion, duracionTotal, imagenUrl });
 
-        const nuevoCurso = await Curso.create({ titulo, descripcion, duracionTotal });
+        const nuevoCurso = await Curso.create({ titulo, descripcion, duracionTotal, imagenUrl });
 
         console.log('Curso creado exitosamente:', nuevoCurso);
         res.json(nuevoCurso);
@@ -44,6 +44,7 @@ export const obtenerCursos = async (req, res) => {
             titulo: curso.titulo,
             descripcion: curso.descripcion,
             duracionTotal: curso.duracionTotal || 0, // Agregar si aplica
+            imagenUrl : curso.imagenUrl,
             clases: curso.clases.map((clase) => ({
                 claseId: clase.id,
                 titulo: clase.titulo,
@@ -53,6 +54,7 @@ export const obtenerCursos = async (req, res) => {
                     nombre: postura.nombre,
                     descripcion: postura.descripcion,
                     duracion: postura.duracion,
+                    imagenUrl : postura.imagenUrl,
                 })),
             })),
         }));
@@ -116,6 +118,7 @@ export const actualizarCurso = async (req, res) => {
         curso.titulo = titulo;
         curso.descripcion = descripcion;
         curso.duracionTotal = duracionTotal;
+        curso.imagenUrl = imagenUrl;
         await curso.save();
         res.json(curso);
     } catch (error) {
@@ -207,7 +210,7 @@ export const obtenerCursosPorAlumnoId = async (req, res) => {
                 {
                     model: Curso,
                     as: 'cursos',
-                    attributes: ['id', 'titulo', 'descripcion', 'duracionTotal'],
+                    attributes: ['id', 'titulo', 'descripcion', 'duracionTotal', 'imagenUrl' ],
                     through: {
                         model: AlumnoCursos,
                         attributes: ['progreso'],
@@ -241,6 +244,7 @@ export const obtenerCursosPorAlumnoId = async (req, res) => {
             descripcion: curso.descripcion,
             duracionTotal: curso.duracionTotal,
             progreso: curso.AlumnoCursos.progreso,
+            imagenUrl : curso.imagenUrl,
             clases: curso.clases.map((clase) => ({
                 claseId: clase.id,
                 titulo: clase.titulo,
@@ -250,6 +254,8 @@ export const obtenerCursosPorAlumnoId = async (req, res) => {
                     nombre: postura.nombre,
                     descripcion: postura.descripcion,
                     duracion: postura.duracion,
+                    imagenUrl : postura.imagenUrl,
+
                 })),
             })),
         }));
