@@ -40,7 +40,7 @@ app.listen(PORT, () => {
 });
 
 // Sincronizar la base de datos 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ force: true }).then(() => {
   console.log('Base de datos conectada');
 }).catch((err) => {
   console.error('Error al conectar la base de datos:', err);
