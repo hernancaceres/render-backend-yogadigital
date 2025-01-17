@@ -58,22 +58,6 @@ export const obtenerClases = async (req, res) => {
 };
 
 
-
-
-// // Obtener una clase por ID
-// export const obtenerClasePorId = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const clase = await Clase.findByPk(id);
-//     if (!clase) {
-//       return res.status(404).json({ error: 'Clase no encontrada' });
-//     }
-//     res.json(clase);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Error al obtener la clase' });
-//   }
-// };
-
 // Obtener una clase por ID
 export const obtenerClasePorId = async (req, res) => {
   const { id } = req.params;

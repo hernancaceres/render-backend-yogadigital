@@ -50,10 +50,10 @@ export const loginAlumno = async (req, res) => {
     res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
 
     res.json({
-       message: 'Inicio de sesión exitoso', 
-       alumno: { id: alumno.id, nombre: alumno.nombre, role:alumno.isAdmin },
-       token: token, 
-       });
+      message: 'Inicio de sesión exitoso',
+      alumno: { id: alumno.id, nombre: alumno.nombre, role: alumno.isAdmin },
+      token: token,
+    });
   } catch (error) {
     console.error('Error en el login:', error);
     res.status(500).json({ error: 'Error al iniciar sesión', detalles: error.message });
@@ -137,21 +137,6 @@ export const eliminarAlumno = async (req, res) => {
   }
 };
 
-// // Middleware para verificar el token JWT
-// export const verificarToken = (req, res, next) => {
-//   const token = req.header('x-auth-token');
-//   if (!token) {
-//     return res.status(401).json({ error: 'No hay token, permiso denegado' });
-//   }
-
-//   try {
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     req.alumnoId = decoded.id;
-//     next();
-//   } catch (error) {
-//     res.status(401).json({ error: 'Token no válido' });
-//   }
-// };
 
 // Cerrar sesión (Logout)
 export const logoutAlumno = (req, res) => {
@@ -161,19 +146,5 @@ export const logoutAlumno = (req, res) => {
   res.json({ message: 'Sesión cerrada correctamente' });
 };
 
-// // Controlador para obtener el perfil del alumno autenticado
-// export const obtenerPerfilAlumno = async (req, res) => {
-//   try {
-//     const alumno = await Alumno.findByPk(req.alumnoId); // Usa req.alumnoId en lugar de req.params.id
 
-//     if (!alumno) {
-//       return res.status(404).json({ error: 'Alumno no encontrado' });
-//     }
-
-//     res.json(alumno);
-//   } catch (error) {
-//     console.error('Error al obtener el perfil del alumno:', error);
-//     res.status(500).json({ error: 'Error al obtener el perfil del alumno' });
-//   }
-// };
 
